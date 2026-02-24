@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Mi espacio · Mian </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Literata:opsz,wght@7..72,300;7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Header específico para dashboard -->
+    <header class="dashboard-header">
+        <div class="container header-container">
+            <div class="logo">
+                <span class="logo-dot"></span>
+                mian · mi espacio personal
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">inicio</a>
+                <a href="#resumen" class="active">resumen</a>
+                <a href="#ejercicios">ejercicios</a>
+                <a href="#aprendizaje">aprendizaje</a>
+                <a href="#comunidad">comunidad</a>
+                <a href="#logros">logros</a>
+            </nav>
+            <div class="header-actions">
+                <span class="user-greeting" id="userGreeting">Hola, Usuario</span>
+
+                <!-- NUEVO: Enlace al panel de admin (visible solo para admins) -->
+                <a href="/admin" id="adminLink" style="display: inline-block; margin-right: 1rem; color: var(--azul-profundo);">👑 Admin</a>
+                <div class="notification-badge" id="notificationBadge">
+                    <span class="notification-icon">🔔</span>
+                    <span class="notification-count" id="notificationCount">3</span>
+                </div>
+                <button class="btn-icon" id="logoutBtn" aria-label="Cerrar sesión">
+                    <span class="logout-icon">🚪</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Bienvenida personalizada con frase motivacional -->
+            <section class="welcome-section" id="resumen">
+                <h1>Bienvenido de nuevo, <span id="userNameDisplay">Usuario</span></h1>
+                <p class="motivational-phrase" id="motivationalPhrase">"El cuidado de tu mente es el mejor regalo que puedes hacerte hoy"</p>
+                <div class="quick-stats-row">
+                    <div class="quick-stat">
+                        <span class="quick-value" id="currentStreak">5</span>
+                        <span class="quick-label">días seguidos</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-value" id="totalExercises">24</span>
+                        <span class="quick-label">ejercicios</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-value" id="achievementCount">7</span>
+                        <span class="quick-label">logros</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FUNCIONALIDAD 1: Panel de control interactivo -->
+            <div class="dashboard-grid">
+                <!-- FUNCIONALIDAD 2: Progreso detallado con gráficos -->
+                <div class="dashboard-card card-large" id="progreso">
+                    <div class="card-header">
+                        <span class="card-icon">📊</span>
+                        <h2>Tu progreso detallado</h2>
+                        <span class="card-badge">actualizado hoy</span>
+                    </div>
+
+                    <div class="progress-stats-detailed">
+                        <div class="stat-item-detailed">
+                            <span class="stat-label">pausas conscientes</span>
+                            <span class="stat-value" id="statPauses">0</span>
+                        </div>
+                        <div class="stat-item-detailed">
+                            <span class="stat-label">ejercicios completados</span>
+                            <span class="stat-value" id="statExercises">0</span>
+                        </div>
+                        <div class="stat-item-detailed">
+                            <span class="stat-label">días seguidos</span>
+                            <span class="stat-value" id="statStreak">0</span>
+                        </div>
+                        <div class="stat-item-detailed">
+                            <span class="stat-label">minutos de práctica</span>
+                            <span class="stat-value" id="statMinutes">0</span>
+                        </div>
+                    </div>
+
+                    <!-- FUNCIONALIDAD 3: Gráfico de actividad semanal interactivo -->
+                    <div class="progress-chart">
+                        <h3>Actividad esta semana <button class="btn-icon-small" id="refreshChart">↻</button></h3>
+                        <div class="chart-bars" id="weeklyChart">
+                            <!-- Se genera con JS -->
+                        </div>
+                    </div>
+
+                    <!-- FUNCIONALIDAD 4: Predicciones y recomendaciones -->
+                    <div class="insight-box">
+                        <span class="insight-icon">💡</span>
+                        <p>Si mantienes tu racha, <strong>alcanzarás 30 días seguidos</strong> el 15 de marzo. ¡Sigue así!</p>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 5: Ejercicios personalizados con IA simulado -->
+                <div class="dashboard-card" id="ejercicios">
+                    <div class="card-header">
+                        <span class="card-icon">🧠</span>
+                        <h2>Ejercicios para ti</h2>
+                    </div>
+
+                    <div class="exercise-filters">
+                        <button class="filter-btn active" data-filter="all">todos</button>
+                        <button class="filter-btn" data-filter="beginner">principiante</button>
+                        <button class="filter-btn" data-filter="intermediate">intermedio</button>
+                    </div>
+
+                    <div class="exercise-list" id="exerciseList">
+                        <!-- Se carga con JS -->
+                    </div>
+
+                    <!-- FUNCIONALIDAD 6: Generador de rutina personalizada -->
+                    <button class="btn btn-primary btn-full" id="generateRoutineBtn">generar rutina para hoy</button>
+
+                    <!-- FUNCIONALIDAD 7: Historial de ejercicios -->
+                    <details class="history-dropdown">
+                        <summary>ver historial de ejercicios</summary>
+                        <div class="history-list" id="exerciseHistory">
+                            <div class="history-item">15 feb · Respiración 4-7-8 ✓</div>
+                            <div class="history-item">14 feb · Escaneo corporal ✓</div>
+                            <div class="history-item">13 feb · Meditación guiada ✓</div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- FUNCIONALIDAD 8: Biblioteca de recursos exclusivos -->
+                <div class="dashboard-card" id="aprendizaje">
+                    <div class="card-header">
+                        <span class="card-icon">📚</span>
+                        <h2>Biblioteca exclusiva</h2>
+                    </div>
+
+                    <div class="resource-categories">
+                        <div class="resource-category">
+                            <h4>🎧 audios guiados</h4>
+                            <ul class="resources-list">
+                                <li><a href="#" class="resource-link" data-type="audio">Meditación para empezar el día (8 min)</a></li>
+                                <li><a href="#" class="resource-link" data-type="audio">Relajación profunda (15 min)</a></li>
+                                <li><a href="#" class="resource-link" data-type="audio">Visualización positiva (10 min)</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="resource-category">
+                            <h4>📄 PDFs descargables</h4>
+                            <ul class="resources-list">
+                                <li><a href="#" class="resource-link" data-type="pdf">Guía de respiración consciente</a></li>
+                                <li><a href="#" class="resource-link" data-type="pdf">Diario de gratitud (plantilla)</a></li>
+                                <li><a href="#" class="resource-link" data-type="pdf">Ejercicios de memoria</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="resource-category">
+                            <h4>🎥 videos exclusivos</h4>
+                            <ul class="resources-list">
+                                <li><a href="#" class="resource-link" data-type="video">Neurociencia del estrés</a></li>
+                                <li><a href="#" class="resource-link" data-type="video">Cómo crear hábitos duraderos</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- FUNCIONALIDAD 9: Reproductor integrado (simulado) -->
+                    <div class="mini-player" id="miniPlayer" style="display: none;">
+                        <p>Reproduciendo: <span id="nowPlaying">-</span></p>
+                        <div class="player-controls">
+                            <button class="player-btn">⏸️</button>
+                            <button class="player-btn">⏹️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 10: Comunidad y foro exclusivo -->
+                <div class="dashboard-card" id="comunidad">
+                    <div class="card-header">
+                        <span class="card-icon">💬</span>
+                        <h2>Comunidad privada</h2>
+                    </div>
+
+                    <div class="community-stats">
+                        <span>👥 128 miembros activos hoy</span>
+                        <span>💬 34 mensajes nuevos</span>
+                    </div>
+
+                    <div class="forum-preview">
+                        <div class="forum-thread">
+                            <span class="thread-title">🔹 ¿Cómo gestionáis la ansiedad?</span>
+                            <span class="thread-replies">12 respuestas</span>
+                        </div>
+                        <div class="forum-thread">
+                            <span class="thread-title">🔹 Reto semanal: meditación diaria</span>
+                            <span class="thread-replies">8 respuestas</span>
+                        </div>
+                        <div class="forum-thread">
+                            <span class="thread-title">🔹 Recomendaciones de libros</span>
+                            <span class="thread-replies">24 respuestas</span>
+                        </div>
+                    </div>
+
+                    <!-- FUNCIONALIDAD 11: Chat en vivo con moderadores -->
+                    <div class="live-chat-preview">
+                        <h4>💬 chat en vivo ahora</h4>
+                        <div class="chat-messages">
+                            <div class="message"><strong>Ana:</strong> ¿Alguien ha probado el ejercicio de hoy?</div>
+                            <div class="message"><strong>Carlos:</strong> Sí, me ha ayudado mucho con la concentración</div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Escribe un mensaje...">
+                            <button class="btn-icon">➤</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 12: Sistema de logros y gamificación -->
+                <div class="dashboard-card" id="logros">
+                    <div class="card-header">
+                        <span class="card-icon">🏆</span>
+                        <h2>Tus logros</h2>
+                        <span class="card-badge" id="achievementProgress">7/20</span>
+                    </div>
+
+                    <div class="achievements-grid">
+                        <div class="achievement earned">
+                            <span class="achievement-icon">🌟</span>
+                            <span class="achievement-name">Primera pausa</span>
+                        </div>
+                        <div class="achievement earned">
+                            <span class="achievement-icon">🔥</span>
+                            <span class="achievement-name">7 días seguidos</span>
+                        </div>
+                        <div class="achievement earned">
+                            <span class="achievement-icon">🧘</span>
+                            <span class="achievement-name">10 meditaciones</span>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="achievement-icon">🔒</span>
+                            <span class="achievement-name">30 días</span>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="achievement-icon">🔒</span>
+                            <span class="achievement-name">50 ejercicios</span>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="achievement-icon">🔒</span>
+                            <span class="achievement-name">Guía de la comunidad</span>
+                        </div>
+                    </div>
+
+                    <!-- FUNCIONALIDAD 13: Próximos logros -->
+                    <div class="next-achievements">
+                        <h4>próximos logros</h4>
+                        <div class="next-item">
+                            <span>15 días seguidos</span>
+                            <span class="progress-percent">50%</span>
+                        </div>
+                        <div class="progress-bar-mini">
+                            <div class="progress-fill-mini" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 14: Retos semanales personalizados -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <h2>Retos activos</h2>
+                    </div>
+
+                    <div class="challenge-item active">
+                        <div class="challenge-info">
+                            <h4>Reto: 7 días de meditación</h4>
+                            <p>Día 3 de 7 completado</p>
+                        </div>
+                        <span class="challenge-badge">+50 pts</span>
+                    </div>
+
+                    <div class="challenge-item">
+                        <div class="challenge-info">
+                            <h4>Reto: 30 pausas conscientes</h4>
+                            <p>12/30 completadas</p>
+                        </div>
+                        <span class="challenge-badge">+100 pts</span>
+                    </div>
+
+                    <button class="btn btn-ghost btn-full">ver todos los retos</button>
+                </div>
+
+                <!-- FUNCIONALIDAD 15: Recomendaciones basadas en el estado de ánimo -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-icon">🌤️</span>
+                        <h2>¿Cómo te sientes hoy?</h2>
+                    </div>
+
+                    <div class="mood-selector">
+                        <button class="mood-btn" data-mood="happy">😊</button>
+                        <button class="mood-btn" data-mood="calm">😌</button>
+                        <button class="mood-btn" data-mood="tired">😴</button>
+                        <button class="mood-btn" data-mood="stressed">😰</button>
+                        <button class="mood-btn" data-mood="sad">😔</button>
+                    </div>
+
+                    <div class="mood-recommendation" id="moodRecommendation">
+                        <p>Selecciona tu estado de ánimo para recibir recomendaciones personalizadas.</p>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 16: Calendario personal de bienestar -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-icon">📅</span>
+                        <h2>Tu calendario</h2>
+                    </div>
+
+                    <div class="mini-calendar">
+                        <div class="calendar-header">
+                            <button class="calendar-nav">←</button>
+                            <span>Febrero 2025</span>
+                            <button class="calendar-nav">→</button>
+                        </div>
+                        <div class="calendar-days">
+                            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                        </div>
+                        <div class="calendar-grid">
+                            <!-- Simulación de días -->
+                            <span class="day-number other-month">28</span>
+                            <span class="day-number">29</span>
+                            <span class="day-number">30</span>
+                            <span class="day-number">31</span>
+                            <span class="day-number">1</span>
+                            <span class="day-number">2</span>
+                            <span class="day-number">3</span>
+                            <span class="day-number">4</span>
+                            <span class="day-number has-activity">5</span>
+                            <span class="day-number">6</span>
+                            <span class="day-number has-activity">7</span>
+                            <span class="day-number">8</span>
+                            <span class="day-number">9</span>
+                            <span class="day-number">10</span>
+                            <span class="day-number today">11</span>
+                        </div>
+                    </div>
+
+                    <div class="upcoming-sessions">
+                        <p><strong>Próxima sesión:</strong> Hoy 18:00 · Meditación guiada</p>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 17: Notas rápidas y recordatorios -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-icon">📌</span>
+                        <h2>Notas rápidas</h2>
+                    </div>
+
+                    <div class="quick-notes">
+                        <textarea class="notes-textarea" placeholder="Escribe una nota... (se guarda automáticamente)"></textarea>
+                        <div class="saved-notes">
+                            <div class="saved-note">🔹 Recordar practicar respiración antes de dormir</div>
+                            <div class="saved-note">🔹 Leer capítulo 3 del libro</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FUNCIONALIDAD 18: Estadísticas comparativas -->
+                <div class="dashboard-card card-large">
+                    <div class="card-header">
+                        <span class="card-icon">📈</span>
+                        <h2>Tu evolución</h2>
+                    </div>
+
+                    <div class="comparison-stats">
+                        <div class="comparison-item">
+                            <span class="comp-label">Este mes vs anterior</span>
+                            <span class="comp-value positive">+23%</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comp-label">Constancia</span>
+                            <span class="comp-value">84%</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comp-label">Meta semanal</span>
+                            <span class="comp-value">7/10</span>
+                        </div>
+                    </div>
+
+                    <div class="mini-graph">
+                        <!-- Simulación de gráfico de líneas -->
+                        <div class="line-graph">
+                            <span class="line-point" style="bottom: 20%"></span>
+                            <span class="line-point" style="bottom: 40%"></span>
+                            <span class="line-point" style="bottom: 60%"></span>
+                            <span class="line-point" style="bottom: 30%"></span>
+                            <span class="line-point" style="bottom: 70%"></span>
+                            <span class="line-point" style="bottom: 80%"></span>
+                            <span class="line-point" style="bottom: 90%"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="dashboard-footer">
+        <div class="container">
+            <p>© 2025 mian · espacio personal · todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
