@@ -41,7 +41,7 @@ app.config.update(
 CORS(app, supports_credentials=True, origins=[
     'http://localhost:5000',
     'http://127.0.0.1:5000',
-    'https://psiconian.pythonanywhere.com'
+    'https://psiconian.onrender.com'  # Cambiado a Render
 ])
 
 # =========================
@@ -130,9 +130,23 @@ def create_recovery_table():
 
 create_recovery_table()
 
-# =========================
-# CREAR ADMIN POR DEFECTO
-# =========================
+# ============================================
+# 🟢🟢🟢  UTILIDADES DE SEGURIDAD (PRIMERO)  🟢🟢🟢
+# ============================================
+
+def hash_password(password):
+    """Hashea una contraseña usando bcrypt"""
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+def check_password(password, hashed):
+    """Verifica si la contraseña coincide con el hash"""
+    return bcrypt.checkpw(password.encode('utf-8'), hashed)
+
+# ============================================
+# 🟢🟢🟢  CREAR ADMIN POR DEFECTO (AHORA SÍ FUNCIONA)  🟢🟢🟢
+# ============================================
+
 def create_admin_user():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
@@ -141,6 +155,7 @@ def create_admin_user():
     admin = cursor.fetchone()
 
     if not admin:
+        # AHORA SÍ, hash_password YA ESTÁ DEFINIDA
         admin_password = hash_password('Admin123!')
         cursor.execute("""
             INSERT INTO users (username, email, name, password, is_admin, created_at)
@@ -152,18 +167,8 @@ def create_admin_user():
 
     conn.close()
 
+# LLAMAR A LA FUNCIÓN DESPUÉS DE DEFINIRLA
 create_admin_user()
-
-# =========================
-# UTILIDADES DE SEGURIDAD
-# =========================
-
-def hash_password(password):
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt)
-
-def check_password(password, hashed):
-    return bcrypt.checkpw(password.encode('utf-8'), hashed)
 
 # =========================
 # FUNCIÓN PARA ENVIAR EMAIL DE BIENVENIDA
@@ -225,7 +230,7 @@ def send_welcome_email_async(user_name, user_email):
                                 </div>
 
                                 <div style="text-align: center; margin: 40px 0;">
-                                    <a href="http://localhost:5000/dashboard" class="button">ACCEDER A MI ESPACIO</a>
+                                    <a href="https://psiconian.onrender.com/dashboard" class="button">ACCEDER A MI ESPACIO</a>
                                 </div>
 
                                 <p><strong>Primeros pasos:</strong></p>
@@ -352,7 +357,6 @@ def serve_dashboard():
         return redirect('/')
     return send_from_directory('.', 'dashboard.html')
 
-@app.route('/admin')
 @app.route('/admin')
 def admin_panel():
     if 'user_id' not in session:
@@ -720,7 +724,7 @@ def recover_password():
 
             conn.commit()
 
-            reset_link = f"http://localhost:5000/reset-password?token={token}"
+            reset_link = f"https://psiconian.onrender.com/reset-password?token={token}"
             send_recovery_email_async(email, user_name or 'Usuario', reset_link)
             print(f"📧 Token generado para {email}: {token[:10]}...")
 
@@ -814,25 +818,28 @@ def ratelimit_handler(e):
     }), 429
 
 # =========================
-# PRODUCCIÓN (PythonAnywhere)
+# PRODUCCIÓN (Render)
 # =========================
 
 application = app
 
 # =========================
-# DESARROLLO LOCAL
+# RUTA DE VERIFICACIÓN DE ENTORNO
 # =========================
-
 @app.route('/check-env')
 def check_env():
     username = os.environ.get('MAIL_USERNAME', 'NO CONFIGURADO')
     password = 'CONFIGURADA' if os.environ.get('MAIL_PASSWORD') else 'NO CONFIGURADA'
     return f"MAIL_USERNAME: {username}<br>MAIL_PASSWORD: {password}"
 
-
+# =========================
+# DESARROLLO LOCAL
+# =========================
 if __name__ == '__main__':
     print("=" * 50)
     print("🚀 Servidor Flask iniciado")
     print("📍 http://localhost:5000")
     print("=" * 50)
-    app.run(debug=True, port=5000)
+    # Para Render, usar puerto dinámico
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
